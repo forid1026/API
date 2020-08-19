@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User API</title>
+    <style>
+        #details{
+            background: brown ;
+            color: aliceblue;
+            width: 50%;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+            margin: auto;
+            
+
+        }
+        button{
+            background: purple;
+            color: aliceblue;
+            padding: 10px 20px;
+            border-radius: 10px;
+            outline: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        input{
+            border-color: rebeccapurple;
+            /* height: 30px; */
+            border-radius: 5px;
+            font-size: 20px ;
+            padding: 2px;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="loadUsers">
+        <input type="text" id="input">
+        <button id="getOutput">Load Users</button>
+    </div>
+    
+    <div id="getInfo">
+
+
+    </div>
+    <div id="details">
+
+    </div>
+
+
+    <script>
+        const getOutput = document.getElementById('getOutput');
+        const input = document.getElementById('input');
+        getOutput.addEventListener('click', function(){
+            users();
+
+        })
+
+        input.addEventListener('keypress', function(){
+           if(event.keyCode === 13){
+               users();
+           }
+
+       })
+
+
+       //get user function
+        function users(){
+            const count = input.value;
+            const countIndex = parseInt(count);
+            fetch('https://jsonplaceholder.typicode.com/users')
+        .then(res => res.json())
+        .then(data =>{
+            document.getElementById('getInfo').innerHTML = "";
+            data = data.slice(0, countIndex);
+            for( let i = 0; i<data.length; i++){
+                console.log(data[i]);
+                const name =  (data[i].name);
+                document.getElementById('getInfo').innerHTML += 
+                    ` <h2>Name: ${name}</h2>
+                      <button onclick= "getDetails(${data[i].id})">Get details ${data[i].id}</button>
+               
+                    <br>`
+                    
+                    ;
+            }
+            
+        })
+
+        }
+           
+               
+        //user-details function
+        function getDetails(usersId){
+            fetch(`https://jsonplaceholder.typicode.com/users/${usersId}`)
+            .then(res => res.json())
+            .then(data =>{
+
+                console.log(data);
+                const name =  (data.name);
+                const username =  (data.username);
+                const address = (data.address.city);
+                const website = (data.website);
+                const email = (data.email);
+                document.getElementById('details').innerHTML += 
+                    `
+                    <h2>Name: ${name} </h2>
+                    <h2>UserName: ${username}</h2>
+                    <h2>Email: ${email}</h2>
+                    <h2>Address: ${address}</h2>  
+                    <h2>Website: ${website}</h2>   
+
+                    <br>`
+                    ;
+                  document.getElementById('getInfo').style.display = 'none';
+                  document.getElementById('details').style.display = 'block';  
+
+                })
+        }
+        
+    </script>
+</body>
+</html>
